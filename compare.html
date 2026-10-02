@@ -20,12 +20,13 @@
   // Hide the install tip and skip the deal animation so every frame shows the settled page.
   try { for (const p of ["vt26.", "vt26p."]) { localStorage.setItem(p + "tipDone", "1"); localStorage.setItem(p + "dealt", "1"); localStorage.removeItem(p + "state"); } } catch (e) {}
   const THEMES = [
-    ["", "Ultramarine (current)", "Raffle tickets on a bright blue table."],
+    ["", "Kraft & Crayon (chosen)", "Light paper-on-desk, least app-like. Josh's pick."],
+    ["ultramarine", "Ultramarine", "Raffle tickets on a bright blue table (the first version)."],
     ["garden", "Night Garden", "Deep evening green. All three palette reviewers proposed a version."],
     ["tomato", "Tomato Matinee", "Cinema-stub red. Three reviewers proposed a warm red."],
     ["plum", "Plum Keepsake", "Softer and more intimate (Codex)."],
-    ["evening", "Evening Keepsake", "Quiet slate, pastel tickets (Hermes)."],
-    ["kraft", "Kraft & Crayon", "Light paper-on-desk, least app-like (Claude)."]
+    ["evening", "Evening Keepsake", "Quiet slate, pastel tickets (Hermes)."]
+
   ];
   const qs = new URLSearchParams(location.search);
   const only = qs.get("only");

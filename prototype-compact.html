@@ -6,11 +6,11 @@
 <title>Veronica's Tickets (compact prototype)</title>
 <meta name="hermes-title" content="Ticket book compact prototype">
 <meta name="hermes-description" content="Compact-layout prototype of Veronica's ticket book for comparison">
-<meta name="theme-color" content="#2330C9">
+<meta name="theme-color" content="#EADBC4">
 <meta name="robots" content="noindex, nofollow">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Tickets">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" type="image/png" href="icon-180.png">
@@ -21,18 +21,18 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&display=swap">
 <style>
 :root {
-  /* Theme roles. Default theme: Ultramarine. */
-  --bg: #2330C9;
-  --bg-deep: #161E8C;
-  --sheet: #0E1368;
-  --on-bg: #FFF7E8;
-  --accent: #FFC23D;
-  --paper: #FFF7E8;
-  --ink: #1A1446;
-  --t-morning: #FFC23D;
-  --t-together: #FF86B3;
-  --t-treat: #74E2C0;
-  --lanyard: #C9B8FF;
+  /* Theme roles. Default theme: Kraft & Crayon (Josh's pick, 2026-10-02). */
+  --bg: #EADBC4;
+  --bg-deep: #B99E78;
+  --sheet: #2B2118;
+  --on-bg: #2B2118;
+  --accent: #A4471F;
+  --paper: #FFFBF3;
+  --ink: #2B2118;
+  --t-morning: #F2B134;
+  --t-together: #EE8A7A;
+  --t-treat: #8CC7A1;
+  --lanyard: #EE8A7A;
   --display: "Big Shoulders Display", "Arial Narrow", Impact, sans-serif;
   --hand: "Gaegu", "Chalkboard SE", "Comic Sans MS", cursive;
   --noise: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
@@ -42,9 +42,12 @@
 [data-theme="tomato"] { --bg: #B8322A; --bg-deep: #82201A; --sheet: #5A1511; --on-bg: #FFF4E2; --accent: #FFD166; --paper: #FFF4E2; --ink: #2A1612; --t-morning: #FFD166; --t-together: #FFB3C7; --t-treat: #8FD9C9; --lanyard: #8FD9C9; }
 [data-theme="plum"] { --bg: #452744; --bg-deep: #2C182B; --sheet: #22121F; --on-bg: #FFF7E8; --accent: #F4CD79; --paper: #FFF7E8; --ink: #291D2B; --t-morning: #F4CD79; --t-together: #F4B7C8; --t-treat: #B8DCCB; --lanyard: #B8DCCB; }
 [data-theme="evening"] { --bg: #203040; --bg-deep: #142030; --sheet: #101A26; --on-bg: #FFF8EE; --accent: #FFE0A0; --paper: #FFF8EE; --ink: #202020; --t-morning: #FFE0A0; --t-together: #FFC0D0; --t-treat: #A0E0C0; --lanyard: #FFC0D0; }
-[data-theme="kraft"] { --bg: #EADBC4; --bg-deep: #B99E78; --sheet: #2B2118; --on-bg: #2B2118; --accent: #A4471F; --paper: #FFFBF3; --ink: #2B2118; --t-morning: #F2B134; --t-together: #EE8A7A; --t-treat: #8CC7A1; --lanyard: #EE8A7A; }
-[data-theme="kraft"] .count { color: var(--ink); }
-[data-theme="kraft"] body::before { opacity: .25; }
+[data-theme="ultramarine"] { --bg: #2330C9; --bg-deep: #161E8C; --sheet: #0E1368; --on-bg: #FFF7E8; --accent: #FFC23D; --paper: #FFF7E8; --ink: #1A1446; --t-morning: #FFC23D; --t-together: #FF86B3; --t-treat: #74E2C0; --lanyard: #C9B8FF; }
+/* Light-table adjustments for the default Kraft theme. */
+html:not([data-theme]) .count, [data-theme="kraft"] .count { color: var(--ink); }
+html:not([data-theme]) body::before, [data-theme="kraft"] body::before { opacity: .25; }
+html:not([data-theme]) .tip-inner, [data-theme="kraft"] .tip-inner { background: var(--paper); color: var(--ink); box-shadow: 3px 4px 0 var(--bg-deep); }
+html:not([data-theme]) .tip button, [data-theme="kraft"] .tip button { background: var(--ink); color: var(--paper); }
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
 body {
@@ -637,8 +640,8 @@ TICKETS.forEach((t, i) => { t.no = String(i + 1).padStart(3, "0"); });
 const $ = id => document.getElementById(id);
 const IDS = new Set(TICKETS.map(t => t.id));
 
-/* Preview themes: ?theme=garden and so on. The default needs no parameter. */
-const THEMES = ["garden", "tomato", "plum", "evening", "kraft"];
+/* Preview themes: ?theme=ultramarine and so on. The default (Kraft) needs no parameter. */
+const THEMES = ["ultramarine", "garden", "tomato", "plum", "evening", "kraft"];
 const qTheme = new URLSearchParams(location.search).get("theme");
 if (THEMES.includes(qTheme)) document.documentElement.dataset.theme = qTheme;
 
