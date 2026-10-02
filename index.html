@@ -1,0 +1,917 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Veronica's Tickets</title>
+<meta name="hermes-title" content="Veronica's birthday tickets">
+<meta name="hermes-description" content="Tear-off birthday ticket book for Veronica's iPhone home screen">
+<meta name="theme-color" content="#2330C9">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Tickets">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" href="icon-180.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&display=swap">
+<style>
+:root {
+  --booth: #2330C9;
+  --booth-deep: #161E8C;
+  --ink: #1A1446;
+  --paper: #FFF7E8;
+  --marigold: #FFC23D;
+  --bubblegum: #FF86B3;
+  --mint: #74E2C0;
+  --lilac: #C9B8FF;
+  --display: "Big Shoulders Display", "Arial Narrow", Impact, sans-serif;
+  --hand: "Gaegu", "Chalkboard SE", "Comic Sans MS", cursive;
+  --noise: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  min-height: 100dvh;
+  background: var(--booth);
+  color: var(--paper);
+  font-family: var(--hand);
+  font-size: 19px;
+  line-height: 1.25;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: none;
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: var(--noise);
+  opacity: .16;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+main {
+  position: relative;
+  max-width: 460px;
+  margin: 0 auto;
+  padding: max(28px, env(safe-area-inset-top)) 16px max(40px, env(safe-area-inset-bottom));
+}
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--paper); outline-offset: 4px; border-radius: 6px; }
+
+/* Install tip */
+.tip {
+  position: relative;
+  max-width: 460px;
+  margin: max(12px, env(safe-area-inset-top)) auto 0;
+  padding: 0 16px;
+}
+.tip-inner {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  background: var(--booth-deep);
+  border-radius: 14px;
+  padding: 12px 14px;
+  font-size: 18px;
+}
+.tip p { margin: 0; flex: 1; }
+.tip b { font-weight: 700; color: var(--marigold); }
+.tip button {
+  border: 0;
+  background: var(--paper);
+  color: var(--ink);
+  border-radius: 10px;
+  padding: 6px 12px;
+  font-weight: 700;
+}
+.tip + main { padding-top: 24px; }
+
+/* Hero */
+.hero { margin-bottom: 30px; }
+.hello { margin: 0 0 2px; font-size: 30px; font-weight: 700; color: var(--marigold); }
+.name {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: clamp(64px, 24vw, 124px);
+  line-height: .8;
+  letter-spacing: .005em;
+  text-transform: uppercase;
+  color: var(--paper);
+  text-shadow: .045em .045em 0 var(--booth-deep);
+}
+.lede { margin: 16px 0 0; font-size: 21px; max-width: 30ch; }
+
+/* Standing promises: a lanyard pass, not a ticket */
+.pass {
+  position: relative;
+  margin: 46px 6px 38px;
+  padding: 34px 20px 20px;
+  background: var(--paper);
+  color: var(--ink);
+  border-radius: 16px;
+  transform: rotate(-1.4deg);
+  box-shadow: 6px 7px 0 var(--booth-deep);
+}
+.pass::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 100%;
+  width: 30px;
+  height: 46px;
+  transform: translateX(-50%);
+  background: repeating-linear-gradient(90deg, var(--lilac) 0 10px, #A994F5 10px 20px);
+}
+.pass::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 12px;
+  width: 54px;
+  height: 10px;
+  transform: translateX(-50%);
+  border-radius: 6px;
+  background: var(--booth);
+}
+.pass h2 {
+  margin: 0 0 10px;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 30px;
+  line-height: 1;
+}
+.pass ul { margin: 0; padding: 0; list-style: none; }
+.pass li {
+  position: relative;
+  padding-left: 26px;
+  margin-top: 8px;
+  font-size: 20px;
+  font-weight: 700;
+}
+.pass li::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: .38em;
+  width: 13px;
+  height: 13px;
+  background: var(--bubblegum);
+  clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
+}
+.pass .fine { margin: 14px 0 0; font-size: 17px; opacity: .7; }
+
+/* Groups */
+.group { margin-top: 34px; }
+.group-head { display: flex; align-items: baseline; gap: 12px; }
+.group h2 {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 34px;
+  line-height: 1;
+}
+.count { font-size: 21px; font-weight: 700; color: var(--tone); }
+.blurb { margin: 4px 0 14px; font-size: 19px; opacity: .85; }
+.empty { margin: 0; padding: 14px 16px; border: 2px dashed rgba(255, 247, 232, .4); border-radius: 12px; }
+.tickets { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+
+/* The ticket */
+.ticket {
+  display: flex;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  text-align: left;
+  color: var(--ink);
+  cursor: pointer;
+  filter: drop-shadow(5px 6px 0 rgba(12, 16, 90, .55));
+}
+.t-body, .t-stub {
+  position: relative;
+  background: var(--tone);
+}
+.t-body::after, .t-stub::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--noise);
+  opacity: .22;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+.t-body {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+  align-content: center;
+  min-height: 132px;
+  padding: 14px 14px 14px 18px;
+  border-radius: 12px 0 0 12px;
+  -webkit-mask:
+    radial-gradient(circle at 100% 0, #0000 11px, #000 11.5px) top / 100% 51% no-repeat,
+    radial-gradient(circle at 100% 100%, #0000 11px, #000 11.5px) bottom / 100% 51% no-repeat;
+  mask:
+    radial-gradient(circle at 100% 0, #0000 11px, #000 11.5px) top / 100% 51% no-repeat,
+    radial-gradient(circle at 100% 100%, #0000 11px, #000 11.5px) bottom / 100% 51% no-repeat;
+}
+.t-stub {
+  flex: 0 0 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-left: 2.5px dashed rgba(26, 20, 70, .38);
+  border-radius: 0 12px 12px 0;
+  -webkit-mask:
+    radial-gradient(circle at 0 0, #0000 11px, #000 11.5px) top / 100% 51% no-repeat,
+    radial-gradient(circle at 0 100%, #0000 11px, #000 11.5px) bottom / 100% 51% no-repeat;
+  mask:
+    radial-gradient(circle at 0 0, #0000 11px, #000 11.5px) top / 100% 51% no-repeat,
+    radial-gradient(circle at 0 100%, #0000 11px, #000 11.5px) bottom / 100% 51% no-repeat;
+}
+.t-kind { display: flex; align-items: center; gap: 6px; font-size: 17px; font-weight: 700; opacity: .78; }
+.t-kind svg { width: 18px; height: 18px; flex: none; }
+.t-title {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: 36px;
+  line-height: .92;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+.t-note { font-size: 19px; font-weight: 700; line-height: 1.12; }
+.t-no {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 30px;
+  letter-spacing: .02em;
+  white-space: nowrap;
+}
+.t-no small { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+.ticket:active .t-body { transform: translateY(1px); }
+
+/* First visit: tickets are dealt onto the table, once */
+.deal .tickets li { animation: deal .55s cubic-bezier(.2, .9, .3, 1.2) both; animation-delay: calc(var(--i) * 70ms + 250ms); }
+@keyframes deal {
+  from { opacity: 0; transform: translateY(26px) rotate(calc(var(--tilt) * 1deg)); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Torn stubs */
+.stubs { margin-top: 44px; }
+.stubs h2 { margin: 0; font-family: var(--display); font-weight: 800; font-size: 34px; line-height: 1; }
+.stub-row { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 12px; }
+.stub {
+  position: relative;
+  width: 76px;
+  min-height: 150px;
+  padding: 10px 6px 10px 12px;
+  border: 0;
+  background: var(--tone);
+  color: var(--ink);
+  border-radius: 0 10px 10px 0;
+  clip-path: var(--zig-l);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  text-align: center;
+  cursor: pointer;
+  opacity: .92;
+}
+.stub .t-no { font-size: 26px; }
+.stub-date { font-size: 16px; font-weight: 700; line-height: 1.05; }
+
+/* Signature */
+.sign { margin-top: 50px; }
+.sign p { margin: 0; font-size: 26px; font-weight: 700; }
+.sign .josh { font-size: 54px; line-height: .9; color: var(--marigold); transform: rotate(-4deg); transform-origin: left; display: inline-block; }
+
+/* Tear sheet */
+dialog {
+  width: 100vw;
+  max-width: 100vw;
+  height: 100dvh;
+  max-height: 100dvh;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--paper);
+  overflow: hidden;
+}
+dialog[open] { display: flex; align-items: center; justify-content: center; }
+dialog::backdrop { background: #0E1368; }
+.sheet {
+  width: 100%;
+  max-width: 440px;
+  padding: max(20px, env(safe-area-inset-top)) 16px max(24px, env(safe-area-inset-bottom));
+  text-align: center;
+}
+.sheet-h { margin: 0; font-family: var(--display); font-weight: 900; font-size: 40px; line-height: .95; text-wrap: balance; }
+.sheet-p { margin: 10px auto 0; max-width: 30ch; font-size: 20px; min-height: 2.5em; }
+.big { margin: 28px auto 30px; width: min(100%, 400px); }
+.big .ticket { cursor: default; filter: drop-shadow(6px 8px 0 rgba(0, 0, 0, .35)); }
+.big .t-body { min-height: 172px; touch-action: none; cursor: grab; transform-origin: 100% 100%; transition: transform .35s cubic-bezier(.3, 1.4, .5, 1); }
+.big .t-title { font-size: 44px; }
+.big .t-note { font-size: 20px; }
+.big .t-stub { flex-basis: 78px; }
+.big .t-no { font-size: 34px; }
+.t-body.gone {
+  clip-path: var(--zig-r);
+  transform: translate(-115vw, 40px) rotate(-24deg) !important;
+  transition: transform .7s cubic-bezier(.55, -.15, .75, .4) !important;
+}
+.ripped .t-stub { border-left: 0; clip-path: var(--zig-l); }
+.actions { display: grid; gap: 10px; justify-items: center; }
+.btn {
+  display: inline-block;
+  min-width: 220px;
+  padding: 14px 26px;
+  border: 0;
+  border-radius: 14px;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 25px;
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+}
+.btn.primary { background: var(--paper); color: var(--ink); box-shadow: 4px 5px 0 var(--marigold); }
+.btn.primary:active { transform: translate(2px, 3px); box-shadow: 2px 2px 0 var(--marigold); }
+.btn.quiet { background: none; color: var(--paper); font-family: var(--hand); font-weight: 700; font-size: 20px; padding: 8px 16px; text-decoration: underline; text-underline-offset: 4px; }
+
+.bit {
+  position: fixed;
+  left: var(--x);
+  top: var(--y);
+  width: 9px;
+  height: 13px;
+  background: var(--c);
+  pointer-events: none;
+  animation: fly 1s cubic-bezier(.15, .7, .3, 1) forwards;
+}
+@keyframes fly {
+  to { transform: translate(var(--dx), var(--dy)) rotate(var(--r)); opacity: 0; }
+}
+
+/* Pass actions: unlimited, never tickets */
+.pass-actions { display: grid; gap: 10px; margin-top: 18px; }
+.chip-btn {
+  flex: 1 1 140px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  padding: 10px 14px;
+  border: 0;
+  border-radius: 12px;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 22px;
+  line-height: 1;
+  color: var(--ink);
+  text-decoration: none;
+  box-shadow: 3px 4px 0 var(--ink);
+  cursor: pointer;
+}
+.chip-btn.nudge { background: var(--bubblegum); }
+.chip-btn.book { background: var(--marigold); }
+.chip-btn:active { transform: translate(2px, 3px); box-shadow: 1px 1px 0 var(--ink); }
+.empty .chip-btn { margin-top: 12px; flex: none; min-width: 200px; box-shadow: 3px 4px 0 var(--booth-deep); background: var(--tone); }
+
+/* Coming up */
+.upcoming { margin: -6px 0 10px; }
+.upcoming h2 { margin: 0; font-family: var(--display); font-weight: 800; font-size: 34px; line-height: 1; }
+.up-list { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 8px; }
+.up {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background: var(--booth-deep);
+  border-radius: 12px;
+  border-left: 6px solid var(--marigold);
+}
+.up.ask { border-left-style: dashed; }
+.up-date { font-family: var(--display); font-weight: 800; font-size: 24px; line-height: 1; min-width: 96px; }
+.up-what { flex: 1; font-size: 17px; line-height: 1.1; }
+.up-x { border: 0; background: none; color: var(--paper); text-decoration: underline; text-underline-offset: 3px; font-weight: 700; font-size: 17px; padding: 6px; cursor: pointer; }
+
+/* Day picker */
+.days {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  margin: 18px -16px 0;
+  padding: 4px 16px 10px;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+}
+.days::-webkit-scrollbar { display: none; }
+.day {
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+  min-width: 66px;
+  padding: 8px 10px 6px;
+  border: 2px solid rgba(255, 247, 232, .5);
+  border-radius: 12px;
+  background: none;
+  color: var(--paper);
+  text-align: center;
+  line-height: 1;
+  cursor: pointer;
+}
+.day .dw { display: block; font-size: 17px; font-weight: 700; }
+.day .dn { display: block; font-family: var(--display); font-weight: 800; font-size: 32px; }
+.day[aria-pressed="true"] { background: var(--marigold); color: var(--ink); border-color: var(--marigold); }
+.day:disabled { opacity: .35; cursor: default; }
+.day:disabled .dn { text-decoration: line-through; }
+
+/* Booking options */
+.ways { display: grid; gap: 10px; margin: 16px 0 22px; text-align: left; }
+.way {
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  gap: 3px 12px;
+  align-items: center;
+  padding: 12px 14px;
+  border: 2px solid rgba(255, 247, 232, .35);
+  border-radius: 14px;
+  background: none;
+  color: var(--paper);
+  text-align: left;
+  cursor: pointer;
+}
+.way .dot { grid-row: span 2; width: 22px; height: 22px; border-radius: 50%; border: 2.5px solid currentColor; }
+.way b { font-family: var(--display); font-weight: 800; font-size: 25px; line-height: 1; }
+.way .sub { font-size: 17px; opacity: .8; line-height: 1.1; }
+.way[aria-pressed="true"] { border-color: var(--marigold); background: rgba(255, 194, 61, .12); }
+.way[aria-pressed="true"] .dot { border-color: var(--marigold); background: radial-gradient(circle, var(--marigold) 0 5.5px, transparent 6px); }
+.way:disabled { opacity: .4; cursor: default; }
+#book { overflow-y: auto; }
+#book .sheet { margin: auto 0; }
+.btn[aria-disabled="true"] { opacity: .4; pointer-events: none; }
+
+[hidden] { display: none !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .t-body.gone { opacity: 0; }
+}
+</style>
+</head>
+<body>
+
+<div class="tip" id="tip" hidden>
+  <div class="tip-inner">
+    <p>Keep this on your Home Screen: tap <b>Share</b>, then <b>Add to Home Screen</b>.</p>
+    <button type="button" id="tip-x">Got it</button>
+  </div>
+</div>
+
+<main>
+  <header class="hero">
+    <p class="hello">Happy birthday,</p>
+    <h1 class="name">Veronica</h1>
+    <p class="lede">This is your ticket book. Tear one off whenever you want it. None of them expire.</p>
+  </header>
+
+  <section class="pass" aria-labelledby="pass-h">
+    <h2 id="pass-h">No ticket needed</h2>
+    <ul>
+      <li>One school-run morning a week is mine. You pick the day, even the night before.</li>
+      <li>From dinner until the kids are asleep, my phone and laptop are put away.</li>
+      <li>Catch me slipping? Send the word.</li>
+    </ul>
+    <div class="pass-actions">
+      <a class="chip-btn nudge" id="nudge" href="#">Phone down, please</a>
+      <button type="button" class="chip-btn book" id="book-open">Book a drop-off</button>
+    </div>
+  </section>
+
+  <section class="upcoming" id="upcoming" hidden aria-labelledby="up-h">
+    <h2 id="up-h">Josh's drop-offs</h2>
+    <ul class="up-list" id="up-list"></ul>
+  </section>
+
+  <div id="groups"></div>
+
+  <section class="stubs" id="stubs" hidden aria-labelledby="stubs-h">
+    <h2 id="stubs-h">Torn stubs</h2>
+    <p class="blurb">Tap a stub to put that ticket back in the book.</p>
+    <ul class="stub-row" id="stub-row"></ul>
+  </section>
+
+  <footer class="sign">
+    <p>Love,</p>
+    <p class="josh">Josh</p>
+  </footer>
+</main>
+
+<dialog id="tear" aria-labelledby="sheet-h">
+  <div class="sheet">
+    <h2 class="sheet-h" id="sheet-h"></h2>
+    <p class="sheet-p" id="sheet-p"></p>
+    <div class="days" id="tear-days" role="group" aria-label="Which morning" hidden></div>
+    <div class="big" id="big"></div>
+    <div class="actions" id="act-a">
+      <button type="button" class="btn primary" id="tear-btn">Tear it off</button>
+      <button type="button" class="btn quiet" id="cancel-btn">Not yet</button>
+    </div>
+    <div class="actions" id="act-b" hidden>
+      <a class="btn primary" id="sms-link" href="#">Text Josh</a>
+      <button type="button" class="btn quiet" id="done-btn">Done</button>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="book" aria-labelledby="book-h">
+  <div class="sheet">
+    <h2 class="sheet-h" id="book-h">Book a drop-off</h2>
+    <p class="sheet-p">Pick the morning. Josh gets a text.</p>
+    <div class="days" id="book-days" role="group" aria-label="Which morning"></div>
+    <div class="ways" id="book-ways" role="group" aria-label="How"></div>
+    <div class="actions">
+      <a class="btn primary" id="book-go" href="#">Book it and text Josh</a>
+      <button type="button" class="btn quiet" id="book-x">Not now</button>
+    </div>
+  </div>
+</dialog>
+
+<script>
+/* ---------- Edit these ---------- */
+
+// Josh's mobile number, e.g. "+13105551234". Leave empty and Messages
+// opens with the text written and the recipient blank.
+const JOSH_PHONE = "";
+
+const NUDGE_TEXT = "📵 Family time. Phone down, please.";
+
+const KINDS = {
+  morning:  { label: "Mornings",     tone: "var(--marigold)",  line: "Morning ticket",  blurb: "Extra school runs, on top of your weekly pick." },
+  together: { label: "Time with me", tone: "var(--bubblegum)", line: "Together ticket", blurb: "Me, fully here, whenever you call it." },
+  treat:    { label: "Treats",       tone: "var(--mint)",      line: "Treat ticket",    blurb: "The bigger ones." }
+};
+
+const TICKETS = [
+  { id: "m1", kind: "morning",  title: "Sleep in",          note: "Stay in bed. I've got school drop-off." },
+  { id: "m2", kind: "morning",  title: "Sleep in",          note: "Hit snooze. Noah and I are already out the door." },
+  { id: "m3", kind: "morning",  title: "Sleep in",          note: "Drop-off is mine, and there's coffee when you're up." },
+  { id: "t1", kind: "together", title: "An hour of me",     note: "Phone in the drawer, laptop shut. You pick what we do." },
+  { id: "t2", kind: "together", title: "An hour of me",     note: "Walk, talk, couch. No screens, no checking." },
+  { id: "t3", kind: "together", title: "An hour of me",     note: "Uninterrupted. If work buzzes, it waits." },
+  { id: "x1", kind: "treat",    title: "Sleep-in Saturday", note: "You sleep. I've got the kids until the nanny arrives." },
+  { id: "x3", kind: "treat",    title: "Dinner for two",    note: "I book it and line up the sitter." },
+  { id: "x4", kind: "treat",    title: "Bedtime off",       note: "Pick a night. I do bedtime for both kids, start to finish." },
+  { id: "x5", kind: "treat",    title: "I've got this",     note: "Hand me one thing from your list. It gets done, no reminder needed." }
+];
+
+/* ---------- App ---------- */
+
+TICKETS.forEach((t, i) => { t.no = String(i + 1).padStart(3, "0"); });
+const $ = id => document.getElementById(id);
+
+const store = {
+  get(k, d) { try { const v = localStorage.getItem("vt26." + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem("vt26." + k, JSON.stringify(v)); } catch (e) {} }
+};
+let torn = store.get("torn", {});          // ticket id -> ISO time torn
+let bookings = store.get("bookings", []);  // { id, date: "YYYY-MM-DD", type: weekly|ticket|ask, ticket? }
+const save = () => { store.set("torn", torn); store.set("bookings", bookings); };
+
+const sms = text => `sms:${JOSH_PHONE}&body=${encodeURIComponent(text)}`;
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+/* Dates, all local time */
+const ymd = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+const parse = s => { const [y, m, d] = s.split("-").map(Number); return new Date(y, m - 1, d); };
+const longDate = s => parse(s).toLocaleDateString(undefined, { weekday: "long", month: "short", day: "numeric" });
+const shortDate = s => parse(s).toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" });
+const tornDate = iso => new Date(iso).toLocaleDateString(undefined, { month: "short", day: "numeric" });
+
+function schoolDays() {
+  // Before 8am today still counts; after that, the next school day is tomorrow at the earliest.
+  const now = new Date();
+  const first = new Date(now.getFullYear(), now.getMonth(), now.getDate() + (now.getHours() < 8 ? 0 : 1));
+  const out = [];
+  for (let i = 0; out.length < 8 && i < 21; i++) {
+    const d = new Date(first.getFullYear(), first.getMonth(), first.getDate() + i);
+    if (d.getDay() > 0 && d.getDay() < 6) out.push(d);
+  }
+  return out;
+}
+function dayWord(d) {
+  const today = new Date();
+  const tmrw = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
+  if (ymd(d) === ymd(today)) return "Today";
+  if (ymd(d) === ymd(tmrw)) return "Tomorrow";
+  return d.toLocaleDateString(undefined, { weekday: "short" });
+}
+function weekOf(s) {
+  const d = parse(s);
+  return ymd(new Date(d.getFullYear(), d.getMonth(), d.getDate() - (d.getDay() + 6) % 7));
+}
+const bookedOn = s => bookings.find(b => b.date === s);
+const weeklyIn = s => bookings.find(b => b.type === "weekly" && weekOf(b.date) === weekOf(s));
+const morningsLeft = () => TICKETS.filter(t => t.kind === "morning" && !torn[t.id]);
+const firstFreeDay = () => { const d = schoolDays().find(d => !bookedOn(ymd(d))); return d ? ymd(d) : null; };
+
+function dayChips(el, selected, onPick) {
+  el.innerHTML = schoolDays().map(d => {
+    const s = ymd(d);
+    const taken = !!bookedOn(s);
+    return `<button type="button" class="day" data-d="${s}" aria-pressed="${s === selected}" ${taken ? "disabled" : ""}
+      aria-label="${longDate(s)}${taken ? ", already booked" : ""}"><span class="dw">${dayWord(d)}</span><span class="dn">${d.getDate()}</span></button>`;
+  }).join("");
+  el.onclick = e => { const b = e.target.closest(".day:not(:disabled)"); if (b) onPick(b.dataset.d); };
+}
+
+function dropoffText(day, way, t) {
+  const when = longDate(day);
+  if (way === "weekly") return `You're on school drop-off ${when}. That's my weekly pick.`;
+  if (way === "ticket") return `You're on school drop-off ${when}. I'm using Morning ticket No. ${t.no}.`;
+  return `I'm out of morning tickets. Could you take Noah to school ${when}?`;
+}
+
+/* Tickets */
+const ICONS = {
+  morning: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.3M12 19.2v2.3M2.5 12h2.3M19.2 12h2.3M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg>',
+  together: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-9.3-9.4C1.4 8.2 3.6 4.8 7 4.8c2.1 0 3.6 1.2 5 3 1.4-1.8 2.9-3 5-3 3.4 0 5.6 3.4 4.3 6.8C19.5 16.4 12 21 12 21z"/></svg>',
+  treat: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1.5l2.6 7.9 7.9 2.6-7.9 2.6L12 22.5l-2.6-7.9L1.5 12l7.9-2.6z"/></svg>'
+};
+
+function zig(side, teeth = 16, depth = 7) {
+  const pts = [];
+  for (let i = 0; i <= teeth; i++) {
+    const y = (i / teeth * 100).toFixed(2) + "%";
+    const d = i % 2 ? depth : 0;
+    pts.push(side === "left" ? `${d}px ${y}` : `calc(100% - ${d}px) ${y}`);
+  }
+  return side === "left"
+    ? `polygon(100% 0, 100% 100%, ${pts.reverse().join(", ")})`
+    : `polygon(0 0, ${pts.join(", ")}, 0 100%)`;
+}
+document.documentElement.style.setProperty("--zig-l", zig("left"));
+document.documentElement.style.setProperty("--zig-r", zig("right"));
+
+function ticketHTML(t, tag) {
+  const k = KINDS[t.kind];
+  const attrs = tag === "button"
+    ? `type="button" data-id="${t.id}" aria-label="${esc(t.title)}, ticket number ${t.no}. ${esc(t.note)} Opens to tear."`
+    : `role="img" aria-label="${esc(t.title)}, ticket number ${t.no}"`;
+  return `<${tag} class="ticket" ${attrs} style="--tone:${k.tone}">
+    <span class="t-body">
+      <span class="t-kind">${ICONS[t.kind]}${k.line}</span>
+      <span class="t-title">${esc(t.title)}</span>
+      <span class="t-note">${esc(t.note)}</span>
+    </span>
+    <span class="t-stub"><span class="t-no"><small>No.</small> ${t.no}</span></span>
+  </${tag}>`;
+}
+
+function render() {
+  let n = 0;
+  $("groups").innerHTML = Object.entries(KINDS).map(([kind, k]) => {
+    const left = TICKETS.filter(t => t.kind === kind && !torn[t.id]);
+    const more = kind === "morning"
+      ? `<button type="button" class="chip-btn" data-ask-morning>Ask for an extra morning</button>`
+      : `<a class="chip-btn" href="${sms(`I'm out of "${k.label}" tickets. Can I have one more?`)}">Ask for one more</a>`;
+    const body = left.length
+      ? `<ul class="tickets">${left.map(t => `<li style="--i:${n++};--tilt:${(n % 2 ? -1 : 1) * 3}">${ticketHTML(t, "button")}</li>`).join("")}</ul>`
+      : `<div class="empty"><p style="margin:0">All used up.</p>${more}</div>`;
+    return `<section class="group" style="--tone:${k.tone}">
+      <div class="group-head"><h2>${k.label}</h2><span class="count">${left.length ? left.length + " left" : "all torn"}</span></div>
+      <p class="blurb">${k.blurb}</p>${body}</section>`;
+  }).join("");
+
+  const used = TICKETS.filter(t => torn[t.id]).sort((a, b) => torn[b.id].localeCompare(torn[a.id]));
+  $("stubs").hidden = !used.length;
+  $("stub-row").innerHTML = used.map(t =>
+    `<li><button type="button" class="stub" data-id="${t.id}" style="--tone:${KINDS[t.kind].tone}" aria-label="${esc(t.title)}, torn ${tornDate(torn[t.id])}. Put it back.">
+      <span class="t-no"><small>No.</small> ${t.no}</span>
+      <span class="stub-date">${esc(t.title)}<br>${tornDate(torn[t.id])}</span>
+    </button></li>`).join("");
+
+  const today = ymd(new Date());
+  const up = bookings.filter(b => b.date >= today).sort((a, b) => a.date.localeCompare(b.date));
+  $("upcoming").hidden = !up.length;
+  $("up-list").innerHTML = up.map(b => {
+    const what = b.type === "weekly" ? "Your weekly pick"
+      : b.type === "ticket" ? `Morning ticket No. ${TICKETS.find(t => t.id === b.ticket).no}`
+      : "Asked for an extra";
+    return `<li class="up${b.type === "ask" ? " ask" : ""}"><span class="up-date">${shortDate(b.date)}</span><span class="up-what">${what}</span>
+      <button type="button" class="up-x" data-id="${b.id}" aria-label="Cancel ${longDate(b.date)}">Cancel</button></li>`;
+  }).join("");
+}
+
+/* Tear sheet */
+const dlg = $("tear");
+const big = $("big");
+let cur = null;
+let isTorn = false;
+let tearDay = null;
+
+function openTear(id) {
+  cur = TICKETS.find(t => t.id === id);
+  if (!cur || torn[id]) return;
+  isTorn = false;
+  big.innerHTML = ticketHTML(cur, "div");
+  $("sheet-h").textContent = "Tear along the dotted line";
+  $("act-a").hidden = false;
+  $("act-b").hidden = true;
+  const days = $("tear-days");
+  if (cur.kind === "morning") {
+    tearDay = firstFreeDay();
+    $("sheet-p").textContent = "Pick the morning, then tear it off.";
+    const pick = d => { tearDay = d; dayChips(days, tearDay, pick); };
+    dayChips(days, tearDay, pick);
+    days.hidden = false;
+  } else {
+    tearDay = null;
+    $("sheet-p").textContent = "Drag the ticket to the left, or tap the button.";
+    days.hidden = true;
+  }
+  dlg.showModal();
+  wireDrag(big.querySelector(".t-body"));
+}
+
+function wireDrag(el) {
+  let startX = null, dx = 0;
+  el.addEventListener("pointerdown", e => {
+    if (isTorn) return;
+    startX = e.clientX; dx = 0;
+    el.setPointerCapture(e.pointerId);
+    el.style.transition = "none";
+  });
+  el.addEventListener("pointermove", e => {
+    if (startX === null) return;
+    dx = Math.min(0, e.clientX - startX);
+    el.style.transform = `translateX(${dx}px) rotate(${dx / 16}deg)`;
+  });
+  const end = () => {
+    if (startX === null) return;
+    startX = null;
+    el.style.transition = "";
+    if (dx < -Math.min(120, el.offsetWidth * .4)) tear();
+    else el.style.transform = "";
+  };
+  el.addEventListener("pointerup", end);
+  el.addEventListener("pointercancel", end);
+}
+
+function tear() {
+  if (isTorn || !cur) return;
+  isTorn = true;
+  torn[cur.id] = new Date().toISOString();
+  let text = `Tearing off my "${cur.title}" ticket (No. ${cur.no}). You're up!`;
+  $("sheet-h").textContent = "Torn off";
+  $("sheet-p").textContent = `Josh owes you one: ${cur.title.toLowerCase()}. Let him know.`;
+  if (cur.kind === "morning" && tearDay) {
+    bookings.push({ id: String(Date.now()), date: tearDay, type: "ticket", ticket: cur.id });
+    text = dropoffText(tearDay, "ticket", cur);
+    $("sheet-p").textContent = `Josh is on drop-off ${longDate(tearDay)}. Let him know.`;
+  }
+  save();
+  $("tear-days").hidden = true;
+  const ticket = big.querySelector(".ticket");
+  const r = big.querySelector(".t-stub").getBoundingClientRect();
+  ticket.classList.add("ripped");
+  big.querySelector(".t-body").classList.add("gone");
+  confetti(r.left, r.top + r.height / 2);
+  $("sms-link").href = sms(text);
+  $("act-a").hidden = true;
+  $("act-b").hidden = false;
+  setTimeout(() => $("sms-link").focus(), 50);
+}
+
+function confetti(x, y) {
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const colors = ["var(--marigold)", "var(--bubblegum)", "var(--mint)", "var(--lilac)", "var(--paper)"];
+  for (let i = 0; i < 28; i++) {
+    const b = document.createElement("span");
+    b.className = "bit";
+    const a = Math.random() * Math.PI * 2;
+    const d = 70 + Math.random() * 150;
+    b.style.cssText = `--x:${x}px;--y:${y}px;--c:${colors[i % colors.length]};--dx:${Math.cos(a) * d}px;--dy:${Math.sin(a) * d - 40}px;--r:${Math.random() * 720 - 360}deg`;
+    dlg.append(b);
+    setTimeout(() => b.remove(), 1100);
+  }
+}
+
+$("tear-btn").addEventListener("click", tear);
+$("cancel-btn").addEventListener("click", () => dlg.close());
+$("done-btn").addEventListener("click", () => dlg.close());
+dlg.addEventListener("close", () => { cur = null; render(); });
+
+/* Booking sheet */
+const bookDlg = $("book");
+const bk = { day: null, way: null };
+
+function options(day) {
+  const w = day && weeklyIn(day);
+  const left = morningsLeft().length;
+  return {
+    weekly: { ok: !!day && !w, title: "My weekly pick", sub: w ? `Already used that week, on ${shortDate(w.date)}.` : "Free, one morning every week." },
+    ticket: { ok: !!day && left > 0, title: "Use a Morning ticket", sub: left ? `${left} left. This tears one off.` : "None left." },
+    ask:    { ok: !!day && left === 0, show: left === 0, title: "Ask for an extra morning", sub: "Out of tickets, so this is a request." }
+  };
+}
+const pickWay = day => { const o = options(day); return o.weekly.ok ? "weekly" : o.ticket.ok ? "ticket" : o.ask.ok ? "ask" : null; };
+
+function paintBook() {
+  dayChips($("book-days"), bk.day, d => { bk.day = d; bk.way = pickWay(d); paintBook(); });
+  const o = options(bk.day);
+  $("book-ways").innerHTML = Object.entries(o).filter(([, v]) => v.show !== false).map(([k, v]) =>
+    `<button type="button" class="way" data-way="${k}" aria-pressed="${bk.way === k}" ${v.ok ? "" : "disabled"}>
+      <span class="dot" aria-hidden="true"></span><b>${v.title}</b><span class="sub">${v.sub}</span></button>`).join("");
+  const go = $("book-go");
+  const ready = !!(bk.day && bk.way && o[bk.way].ok);
+  go.setAttribute("aria-disabled", String(!ready));
+  go.textContent = bk.way === "ask" ? "Ask Josh" : "Book it and text Josh";
+  go.href = ready ? sms(dropoffText(bk.day, bk.way, morningsLeft()[0])) : "#";
+}
+
+function openBook() {
+  bk.day = firstFreeDay();
+  bk.way = pickWay(bk.day);
+  paintBook();
+  bookDlg.showModal();
+}
+
+$("book-ways").addEventListener("click", e => {
+  const b = e.target.closest(".way:not(:disabled)");
+  if (b) { bk.way = b.dataset.way; paintBook(); }
+});
+$("book-go").addEventListener("click", e => {
+  if (!bk.day || !bk.way || !options(bk.day)[bk.way].ok) { e.preventDefault(); return; }
+  const b = { id: String(Date.now()), date: bk.day, type: bk.way };
+  if (bk.way === "ticket") {
+    const t = morningsLeft()[0];
+    torn[t.id] = new Date().toISOString();
+    b.ticket = t.id;
+  }
+  bookings.push(b);
+  save();
+  setTimeout(() => bookDlg.close(), 400);   // let Messages open first
+});
+$("book-x").addEventListener("click", () => bookDlg.close());
+bookDlg.addEventListener("close", render);
+$("book-open").addEventListener("click", openBook);
+$("groups").addEventListener("click", e => {
+  if (e.target.closest("[data-ask-morning]")) { openBook(); return; }
+  const b = e.target.closest(".ticket[data-id]");
+  if (b) openTear(b.dataset.id);
+});
+
+/* Cancel a booking. A ticket goes back in the book, and Messages opens so Josh hears. */
+$("up-list").addEventListener("click", e => {
+  const btn = e.target.closest(".up-x");
+  if (!btn) return;
+  const b = bookings.find(x => x.id === btn.dataset.id);
+  if (!b || !confirm(`Cancel drop-off on ${longDate(b.date)}?${b.ticket ? " The ticket goes back in your book." : ""}`)) return;
+  bookings = bookings.filter(x => x !== b);
+  if (b.ticket) delete torn[b.ticket];
+  save();
+  render();
+  location.href = sms(`Never mind about drop-off on ${longDate(b.date)}. I've got it.`);
+});
+
+/* Put a torn ticket back (undo an accidental tear) */
+$("stub-row").addEventListener("click", e => {
+  const b = e.target.closest(".stub[data-id]");
+  if (!b) return;
+  const t = TICKETS.find(x => x.id === b.dataset.id);
+  if (t && confirm(`Put "${t.title}" (No. ${t.no}) back in the book?`)) {
+    delete torn[t.id];
+    bookings = bookings.filter(x => x.ticket !== t.id);
+    save();
+    render();
+  }
+});
+
+$("nudge").href = sms(NUDGE_TEXT);
+
+/* Home Screen tip, only in the browser */
+const standalone = window.navigator.standalone === true || matchMedia("(display-mode: standalone)").matches;
+if (!standalone && !store.get("tipDone", false)) $("tip").hidden = false;
+$("tip-x").addEventListener("click", () => { $("tip").hidden = true; store.set("tipDone", true); });
+
+/* Deal the tickets once, on the first visit */
+if (!store.get("dealt", false)) {
+  document.body.classList.add("deal");
+  store.set("dealt", true);
+}
+render();
+</script>
+</body>
+</html>
