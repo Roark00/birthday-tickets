@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Veronica's Tickets</title>
-<meta name="hermes-title" content="Veronica's birthday tickets">
-<meta name="hermes-description" content="Tear-off birthday ticket book for Veronica's iPhone home screen">
+<title>Veronica's Tickets (compact prototype)</title>
+<meta name="hermes-title" content="Ticket book compact prototype">
+<meta name="hermes-description" content="Compact-layout prototype of Veronica's ticket book for comparison">
 <meta name="theme-color" content="#2330C9">
 <meta name="robots" content="noindex, nofollow">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -481,6 +481,36 @@ dialog::backdrop { background: var(--sheet); }
 #book .sheet { margin: auto 0; }
 .btn[aria-disabled="true"], .btn:disabled { opacity: .4; pointer-events: none; }
 
+/* ---- Compact layout prototype ---- */
+.compact .hero { margin-bottom: 8px; }
+.compact .name { font-size: clamp(56px, 17vw, 80px); }
+.compact .lede { margin-top: 12px; font-size: 22px; font-weight: 700; text-wrap: balance; }
+.compact .pass { margin: 52px 6px 18px; }
+.compact .pass.no-strap { margin-top: 22px; padding-top: 22px; transform: rotate(.9deg); }
+.compact .pass.no-strap::before, .compact .pass.no-strap::after { display: none; }
+.card-p { margin: 0 0 14px; font-size: 20px; font-weight: 700; }
+.compact .pass .chip-btn { width: 100%; }
+.compact .upcoming { margin: 16px 0 0; }
+.compact .upcoming h3 { margin: 0; font-family: var(--display); font-weight: 800; font-size: 22px; }
+.compact .pass .up { background: color-mix(in srgb, var(--t-morning) 28%, var(--paper)); color: var(--ink); }
+.compact .pass .up-x { color: var(--ink); }
+.compact .pass .up-date { min-width: 84px; font-size: 21px; }
+.book-h { margin: 34px 0 4px; font-family: var(--display); font-weight: 800; font-size: 34px; line-height: 1; }
+details.group, details.used { margin-top: 12px; border-radius: 14px; background: color-mix(in srgb, var(--bg-deep) 75%, transparent); }
+details.group > summary, details.used > summary { list-style: none; display: flex; align-items: center; gap: 12px; min-height: 64px; padding: 10px 16px; cursor: pointer; }
+details.group > summary::-webkit-details-marker, details.used > summary::-webkit-details-marker { display: none; }
+.g-chip { flex: none; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 10px; background: var(--tone); color: var(--ink); }
+.g-chip svg { width: 22px; height: 22px; }
+.g-name { flex: 1; font-family: var(--display); font-weight: 800; font-size: 28px; line-height: 1; }
+.g-chev { width: 11px; height: 11px; margin-right: 4px; border-right: 3px solid currentColor; border-bottom: 3px solid currentColor; transform: rotate(45deg); transition: transform .2s; }
+details[open] > summary .g-chev { transform: rotate(-135deg); }
+details.group[open], details.used[open] { padding-bottom: 14px; }
+details.group .blurb, details.group .tickets, details.group .empty, details.used .blurb, details.used .stub-row { margin-left: 12px; margin-right: 12px; }
+.compact .group { margin-top: 12px; }
+/* Plain system type for instructions and dates; handwriting stays for Josh's voice. */
+.compact ~ dialog .sheet-p, .blurb, .way .sub, .up-what, .tip p { font-family: -apple-system, system-ui, sans-serif; letter-spacing: 0; }
+.compact ~ dialog .sheet-p { font-size: 18px; }
+
 [hidden] { display: none !important; }
 
 @media (prefers-reduced-motion: reduce) {
@@ -498,38 +528,40 @@ dialog::backdrop { background: var(--sheet); }
   </div>
 </div>
 
-<main>
+<main class="compact">
   <header class="hero">
     <p class="hello">Happy birthday,</p>
     <h1 class="name">Veronica</h1>
-    <p class="lede">This is your ticket book. Tear one off whenever you want it. None of them expire.</p>
+    <p class="lede">A little less screen. A little more us.</p>
   </header>
 
-  <section class="pass" aria-labelledby="pass-h">
-    <h2 id="pass-h">No ticket needed</h2>
+  <section class="pass" aria-labelledby="wk-h">
+    <h2 id="wk-h">Your weekly morning</h2>
+    <p class="card-p">One school-run morning a week is mine. You pick the day, even the night before.</p>
+    <button type="button" class="chip-btn book" id="book-open">Choose a morning</button>
+    <section class="upcoming" id="upcoming" hidden aria-labelledby="up-h">
+      <h3 id="up-h">Coming up</h3>
+      <ul class="up-list" id="up-list"></ul>
+    </section>
+  </section>
+
+  <section class="pass no-strap" aria-labelledby="pass-h">
+    <h2 id="pass-h">Always yours</h2>
     <ul>
-      <li>One school-run morning a week is mine. You pick the day, even the night before.</li>
       <li>From dinner until the kids are asleep, my phone and laptop are put away.</li>
       <li>Catch me slipping? Send the word.</li>
     </ul>
-    <div class="pass-actions">
-      <a class="chip-btn nudge" id="nudge" href="#">Phone down, please</a>
-      <button type="button" class="chip-btn book" id="book-open">Book a drop-off</button>
-    </div>
+    <div class="pass-actions"><a class="chip-btn nudge" id="nudge" href="#">Phone down, please</a></div>
   </section>
 
-  <section class="upcoming" id="upcoming" hidden aria-labelledby="up-h">
-    <h2 id="up-h">Josh's drop-offs</h2>
-    <ul class="up-list" id="up-list"></ul>
-  </section>
-
+  <h2 class="book-h">Your ticket book</h2>
   <div id="groups"></div>
 
-  <section class="stubs" id="stubs" hidden aria-labelledby="stubs-h">
-    <h2 id="stubs-h">Torn stubs</h2>
+  <details class="stubs used" id="stubs" hidden>
+    <summary><span class="g-name">Used tickets</span><span class="g-chev" aria-hidden="true"></span></summary>
     <p class="blurb">Tap a stub to put that ticket back in the book.</p>
     <ul class="stub-row" id="stub-row"></ul>
-  </section>
+  </details>
 
   <footer class="sign">
     <p>Love,</p>
@@ -611,7 +643,7 @@ const qTheme = new URLSearchParams(location.search).get("theme");
 if (THEMES.includes(qTheme)) document.documentElement.dataset.theme = qTheme;
 
 /* State: one versioned object, saved in one write. */
-const KEY = "vt26.state";
+const KEY = "vt26p.state";
 function loadState() {
   try {
     const st = JSON.parse(localStorage.getItem(KEY));
@@ -641,8 +673,8 @@ function commit(change) {
   }
 }
 const flag = {
-  get(k) { try { return localStorage.getItem("vt26." + k) === "1"; } catch (e) { return false; } },
-  set(k) { try { localStorage.setItem("vt26." + k, "1"); } catch (e) {} }
+  get(k) { try { return localStorage.getItem("vt26p." + k) === "1"; } catch (e) { return false; } },
+  set(k) { try { localStorage.setItem("vt26p." + k, "1"); } catch (e) {} }
 };
 
 const phone = () => state.phone || JOSH_PHONE;
@@ -742,6 +774,7 @@ function ticketHTML(t, tag) {
 
 function render() {
   let n = 0;
+  const openKinds = new Set([...document.querySelectorAll("details.group[open]")].map(d => d.dataset.kind));
   $("groups").innerHTML = Object.entries(KINDS).map(([kind, k]) => {
     const left = TICKETS.filter(t => t.kind === kind && !state.torn[t.id]);
     const more = kind === "morning"
@@ -750,9 +783,9 @@ function render() {
     const body = left.length
       ? `<ul class="tickets">${left.map(t => `<li style="--i:${n++};--tilt:${(n % 2 ? -1 : 1) * 3}">${ticketHTML(t, "button")}</li>`).join("")}</ul>`
       : `<div class="empty"><p style="margin:0">All used up.</p>${more}</div>`;
-    return `<section class="group" style="--tone:${k.tone}">
-      <div class="group-head"><h2>${k.label}</h2><span class="count">${left.length ? left.length + " left" : "all torn"}</span></div>
-      <p class="blurb">${k.blurb}</p>${body}</section>`;
+    return `<details class="group" data-kind="${kind}" style="--tone:${k.tone}" ${openKinds.has(kind) ? "open" : ""}>
+      <summary><span class="g-chip" aria-hidden="true">${ICONS[kind]}</span><span class="g-name">${k.label}</span><span class="count">${left.length ? left.length + " left" : "all torn"}</span><span class="g-chev" aria-hidden="true"></span></summary>
+      <p class="blurb">${k.blurb}</p>${body}</details>`;
   }).join("");
 
   const used = TICKETS.filter(t => state.torn[t.id]).sort((a, b) => state.torn[b.id].localeCompare(state.torn[a.id]));
