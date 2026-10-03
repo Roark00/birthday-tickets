@@ -32,6 +32,7 @@
   --t-morning: #F2B134;
   --t-together: #EE8A7A;
   --t-treat: #8CC7A1;
+  --t-afternoon: #9EB8E0;
   --lanyard: #EE8A7A;
   --display: "Big Shoulders Display", "Arial Narrow", Impact, sans-serif;
   --hand: "Gaegu", "Chalkboard SE", "Comic Sans MS", cursive;
@@ -669,6 +670,7 @@ const NUDGE_TEXT = "📵 Family time. Phone down, please.";
 
 const KINDS = {
   morning:  { label: "Mornings",     tone: "var(--t-morning)",  line: "Morning ticket",  blurb: "Extra school runs, on top of your weekly pick." },
+  afternoon: { label: "Afternoons",  tone: "var(--t-afternoon)", line: "Afternoon ticket", blurb: "School pickups. You get the afternoon." },
   together: { label: "Time with me", tone: "var(--t-together)", line: "Together ticket", blurb: "Me, fully here, whenever you call it." },
   treat:    { label: "Treats",       tone: "var(--t-treat)",    line: "Treat ticket",    blurb: "Little luxuries, on me." }
 };
@@ -677,11 +679,11 @@ const TICKETS = [
   { id: "m1", kind: "morning",  title: "Sleep in",          note: "Stay in bed. I've got school drop-off." },
   { id: "m2", kind: "morning",  title: "Sleep in",          note: "Hit snooze. The kids and I are already out the door." },
   { id: "m3", kind: "morning",  title: "Sleep in",          note: "Drop-off is mine, and there's coffee when you're up." },
+  { id: "a1", kind: "afternoon", title: "School pickup",     note: "I get the kids from school. You get the afternoon." },
+  { id: "a2", kind: "afternoon", title: "School pickup",     note: "Pickup's mine. Take the afternoon for yourself." },
   { id: "t1", kind: "together", title: "An hour of me",     note: "Phone in the drawer, laptop shut. You pick what we do." },
   { id: "t2", kind: "together", title: "An hour of me",     note: "Walk, talk, couch. No screens, no checking." },
   { id: "x1", kind: "treat",    title: "Sleep-in Saturday", note: "You sleep. I've got the kids until the nanny arrives." },
-  { id: "x7", kind: "treat",    title: "School pickup",     note: "I get the kids from school. You get the afternoon." },
-  { id: "x8", kind: "treat",    title: "School pickup",     note: "Pickup's mine. Take the afternoon for yourself." },
   { id: "x4", kind: "treat",    title: "Bedtime off",       note: "Pick a night. I do bedtime for both kids, start to finish." },
   { id: "x5", kind: "treat",    title: "I've got this",     note: "Hand me one thing from your list. It gets done, no reminder needed." }
 ];
@@ -705,7 +707,8 @@ function loadState() {
     if (st && st.v === 1 && st.torn && typeof st.torn === "object" && Array.isArray(st.bookings)) {
       for (const id of Object.keys(st.torn)) if (!IDS.has(id)) delete st.torn[id];
       st.bookings = st.bookings.filter(b => b && /^\d{4}-\d{2}-\d{2}$/.test(b.date)
-        && ["weekly", "ticket", "ask"].includes(b.type) && (!b.ticket || IDS.has(b.ticket)));
+        && ["weekly", "ticket", "ask"].includes(b.type) && (!b.ticket || IDS.has(b.ticket))
+        && (b.what === undefined || b.what === "pickup"));
       st.phone = typeof st.phone === "string" ? st.phone : "";
       return st;
     }
@@ -759,10 +762,15 @@ const shortDate = s => parse(s).toLocaleDateString(undefined, { weekday: "short"
 const tornDate = iso => new Date(iso).toLocaleDateString(undefined, { month: "short", day: "numeric" });
 const today = () => ymd(new Date());
 
-function schoolDays() {
-  // Before 8am today still counts; after that, the next school day is tomorrow at the earliest.
+// Drop-offs and pickups are booked separately: a drop-off and a pickup can share a day.
+const whatOf = b => b.what || "drop-off";
+const DATED = { morning: "drop-off", afternoon: "pickup" };
+
+function schoolDays(what = "drop-off") {
+  // Today still counts before 8am for a drop-off and before noon for a pickup.
   const now = new Date();
-  const first = new Date(now.getFullYear(), now.getMonth(), now.getDate() + (now.getHours() < 8 ? 0 : 1));
+  const cutoff = what === "pickup" ? 12 : 8;
+  const first = new Date(now.getFullYear(), now.getMonth(), now.getDate() + (now.getHours() < cutoff ? 0 : 1));
   const out = [];
   for (let i = 0; out.length < 8 && i < 21; i++) {
     const d = new Date(first.getFullYear(), first.getMonth(), first.getDate() + i);
@@ -781,16 +789,16 @@ function weekOf(s) {
   const d = parse(s);
   return ymd(new Date(d.getFullYear(), d.getMonth(), d.getDate() - (d.getDay() + 6) % 7));
 }
-const bookedOn = s => state.bookings.find(b => b.date === s);
+const bookedOn = (s, what = "drop-off") => state.bookings.find(b => b.date === s && whatOf(b) === what);
 const weeklyIn = s => state.bookings.find(b => b.type === "weekly" && weekOf(b.date) === weekOf(s));
 const morningsLeft = () => TICKETS.filter(t => t.kind === "morning" && !state.torn[t.id]);
-const isBookable = s => !!s && !bookedOn(s) && schoolDays().some(d => ymd(d) === s);
-const firstFreeDay = () => { const d = schoolDays().find(d => !bookedOn(ymd(d))); return d ? ymd(d) : null; };
+const isBookable = (s, what = "drop-off") => !!s && !bookedOn(s, what) && schoolDays(what).some(d => ymd(d) === s);
+const firstFreeDay = (what = "drop-off") => { const d = schoolDays(what).find(d => !bookedOn(ymd(d), what)); return d ? ymd(d) : null; };
 
-function dayChips(el, selected, onPick) {
-  el.innerHTML = schoolDays().map(d => {
+function dayChips(el, selected, onPick, what = "drop-off") {
+  el.innerHTML = schoolDays(what).map(d => {
     const s = ymd(d);
-    const taken = !!bookedOn(s);
+    const taken = !!bookedOn(s, what);
     return `<button type="button" class="day" data-d="${s}" aria-pressed="${s === selected}" ${taken ? "disabled" : ""}
       aria-label="${longDate(s)}${taken ? ", already booked" : ""}"><span class="dw">${dayWord(d)}</span><span class="dn">${d.getDate()}</span></button>`;
   }).join("");
@@ -804,13 +812,15 @@ function dropoffText(day, way, t) {
   return `I'm out of morning tickets. Could you take the kids to school ${when}?`;
 }
 const ticketById = id => TICKETS.find(t => t.id === id);
-const bookingText = b => dropoffText(b.date, b.type, b.ticket && ticketById(b.ticket));
+const pickupText = (day, t) => `You're on school pickup ${longDate(day)}. I'm using Afternoon ticket No. ${t.no}.`;
+const bookingText = b => whatOf(b) === "pickup" ? pickupText(b.date, ticketById(b.ticket)) : dropoffText(b.date, b.type, b.ticket && ticketById(b.ticket));
 
 /* Tickets */
 const ICONS = {
   morning: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.3M12 19.2v2.3M2.5 12h2.3M19.2 12h2.3M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg>',
   together: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-9.3-9.4C1.4 8.2 3.6 4.8 7 4.8c2.1 0 3.6 1.2 5 3 1.4-1.8 2.9-3 5-3 3.4 0 5.6 3.4 4.3 6.8C19.5 16.4 12 21 12 21z"/></svg>',
-  treat: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1.5l2.6 7.9 7.9 2.6-7.9 2.6L12 22.5l-2.6-7.9L1.5 12l7.9-2.6z"/></svg>'
+  treat: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1.5l2.6 7.9 7.9 2.6-7.9 2.6L12 22.5l-2.6-7.9L1.5 12l7.9-2.6z"/></svg>',
+  afternoon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M2.5 18h19M6.5 18a5.5 5.5 0 0 1 11 0M12 6.5v2.3M4.8 10.8l1.6 1.6M19.2 10.8l-1.6 1.6"/></svg>'
 };
 
 function zig(side, teeth = 16, depth = 7) {
@@ -869,9 +879,10 @@ function render() {
   const up = state.bookings.filter(b => b.date >= today()).sort((a, b) => a.date.localeCompare(b.date));
   $("upcoming").hidden = !up.length;
   $("up-list").innerHTML = up.map(b => {
-    const what = b.type === "weekly" ? "Your weekly pick"
-      : b.type === "ticket" ? `Morning ticket No. ${ticketById(b.ticket).no}`
-      : "Asked for an extra. Waiting on Josh.";
+    const what = whatOf(b) === "pickup" ? `Pickup. Afternoon ticket No. ${ticketById(b.ticket).no}`
+      : b.type === "weekly" ? "Drop-off. Your weekly pick"
+      : b.type === "ticket" ? `Drop-off. Morning ticket No. ${ticketById(b.ticket).no}`
+      : "Drop-off. Asked for an extra, waiting on Josh.";
     return `<li class="up${b.type === "ask" ? " ask" : ""}"><span class="up-date">${shortDate(b.date)}</span><span class="up-what">${what}</span>
       <span class="up-acts"><a class="up-x" href="${sms(bookingText(b))}" aria-label="Text Josh again about ${longDate(b.date)}">Text again</a>
       <button type="button" class="up-x" data-id="${b.id}" aria-label="Cancel ${longDate(b.date)}">Cancel</button></span></li>`;
@@ -900,16 +911,17 @@ function openTear(id) {
   $("act-a").hidden = false;
   $("act-b").hidden = true;
   const days = $("tear-days");
-  if (cur.kind === "morning") {
-    tearDay = firstFreeDay();
+  const what = DATED[cur.kind];
+  if (what) {
+    tearDay = firstFreeDay(what);
     if (tearDay) {
-      $("sheet-p").textContent = "Pick the morning, then tear it off.";
-      const pick = d => { tearDay = d; dayChips(days, tearDay, pick); };
-      dayChips(days, tearDay, pick);
+      $("sheet-p").textContent = what === "pickup" ? "Pick the afternoon, then tear it off." : "Pick the morning, then tear it off.";
+      const pick = d => { tearDay = d; dayChips(days, tearDay, pick, what); };
+      dayChips(days, tearDay, pick, what);
       days.hidden = false;
     } else {
       blocked = true;
-      $("sheet-p").textContent = "Every morning in the next two weeks is already booked. Cancel one first, and this ticket stays in your book.";
+      $("sheet-p").textContent = `Every school day in the next two weeks already has a ${what}. Cancel one first, and this ticket stays in your book.`;
       days.hidden = true;
     }
   } else {
@@ -949,24 +961,26 @@ function wireDrag(el) {
 
 function tear() {
   if (isTorn || !cur || blocked) return;
-  const morning = cur.kind === "morning";
-  if (morning && !isBookable(tearDay)) {
-    tearDay = firstFreeDay();
-    const pick = d => { tearDay = d; dayChips($("tear-days"), tearDay, pick); };
-    dayChips($("tear-days"), tearDay, pick);
-    $("sheet-p").textContent = "That morning isn't available anymore. Pick another.";
+  const what = DATED[cur.kind];
+  if (what && !isBookable(tearDay, what)) {
+    tearDay = firstFreeDay(what);
+    const pick = d => { tearDay = d; dayChips($("tear-days"), tearDay, pick, what); };
+    dayChips($("tear-days"), tearDay, pick, what);
+    $("sheet-p").textContent = "That day isn't available anymore. Pick another.";
     return;
   }
   const t = cur;
   const ok = commit(st => {
     st.torn[t.id] = new Date().toISOString();
-    if (morning) st.bookings.push({ id: String(Date.now()), date: tearDay, type: "ticket", ticket: t.id });
+    if (what) st.bookings.push(Object.assign({ id: String(Date.now()), date: tearDay, type: "ticket", ticket: t.id }, what === "pickup" ? { what: "pickup" } : {}));
   });
   if (!ok) return;
   isTorn = true;
-  const text = morning ? dropoffText(tearDay, "ticket", t) : `Tearing off my "${t.title}" ticket (No. ${t.no}). You're up!`;
+  const text = what === "pickup" ? pickupText(tearDay, t)
+    : what ? dropoffText(tearDay, "ticket", t)
+    : `Tearing off my "${t.title}" ticket (No. ${t.no}). You're up!`;
   $("sheet-h").textContent = "Torn off";
-  $("sheet-p").textContent = morning
+  $("sheet-p").textContent = what
     ? `Saved for ${longDate(tearDay)}. Now send Josh the text so he knows.`
     : "Saved. Now send Josh the text so he knows.";
   $("tear-days").hidden = true;
@@ -983,7 +997,7 @@ function tear() {
 
 function confetti(x, y) {
   if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  const colors = ["var(--t-morning)", "var(--t-together)", "var(--t-treat)", "var(--lanyard)", "var(--paper)"];
+  const colors = ["var(--t-morning)", "var(--t-afternoon)", "var(--t-together)", "var(--t-treat)", "var(--paper)"];
   for (let i = 0; i < 28; i++) {
     const b = document.createElement("span");
     b.className = "bit";
@@ -1082,7 +1096,7 @@ function cancelBooking(b) {
       if (b.ticket) delete st.torn[b.ticket];
     })) return;
     render();
-    location.href = sms(`Never mind about drop-off on ${longDate(b.date)}. I've got it.`);
+    location.href = sms(`Never mind about ${whatOf(b)} on ${longDate(b.date)}. I've got it.`);
   });
 }
 
