@@ -89,23 +89,41 @@ dialog :focus-visible { outline-color: var(--paper); }
   padding: 0 16px;
 }
 .tip-inner {
-  display: flex;
-  gap: 12px;
-  align-items: center;
   background: var(--bg-deep);
-  border-radius: 14px;
-  padding: 12px 14px;
-  font-size: 18px;
+  border-radius: 16px;
+  padding: 16px 16px 14px;
 }
-.tip p { margin: 0; flex: 1; }
-.tip b { font-weight: 700; color: var(--accent); }
+.tip-h { margin: 0 0 6px; font-family: var(--display); font-weight: 800; font-size: 27px; line-height: 1; }
+.tip-steps { margin: 0; padding-left: 1.3em; font-family: -apple-system, system-ui, sans-serif; font-size: 17px; line-height: 1.5; }
+.tip-steps li { margin: 7px 0; padding-left: 2px; }
+.tip-steps li::marker { font-weight: 700; }
+.tip b { font-weight: 700; }
+.tip-note { margin: 10px 0 12px; font-family: -apple-system, system-ui, sans-serif; font-size: 15px; line-height: 1.4; opacity: .8; }
+/* Pictures of the real Safari buttons, so she knows what to look for. */
+.ios-ico, .ios-more {
+  display: inline-grid;
+  place-items: center;
+  height: 32px;
+  margin: -4px 2px 0;
+  vertical-align: middle;
+  background: #fff;
+  color: #1C1C1E;
+  border: 1px solid rgba(0, 0, 0, .12);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .15);
+}
+.ios-ico { width: 32px; border-radius: 9px; }
+.ios-ico svg { width: 20px; height: 20px; }
+.ios-more { width: 44px; border-radius: 16px; }
+.ios-more svg { width: 22px; height: 6px; }
 .tip button {
+  display: block;
+  width: 100%;
   border: 0;
   background: var(--paper);
   color: var(--ink);
-  border-radius: 10px;
+  border-radius: 12px;
   min-height: 44px;
-  padding: 6px 12px;
+  padding: 8px 12px;
   font-weight: 700;
 }
 .tip + main { padding-top: 24px; }
@@ -511,7 +529,7 @@ details.group[open], details.used[open] { padding-bottom: 14px; }
 details.group .blurb, details.group .tickets, details.group .empty, details.used .blurb, details.used .stub-row { margin-left: 12px; margin-right: 12px; }
 .compact .group { margin-top: 12px; }
 /* Plain system type for instructions and dates; handwriting stays for Josh's voice. */
-.compact ~ dialog .sheet-p, .blurb, .way .sub, .up-what, .tip p { font-family: -apple-system, system-ui, sans-serif; letter-spacing: 0; }
+.compact ~ dialog .sheet-p, .blurb, .way .sub, .up-what { font-family: -apple-system, system-ui, sans-serif; letter-spacing: 0; }
 .compact ~ dialog .sheet-p { font-size: 18px; }
 
 [hidden] { display: none !important; }
@@ -526,8 +544,15 @@ details.group .blurb, details.group .tickets, details.group .empty, details.used
 
 <div class="tip" id="tip" hidden>
   <div class="tip-inner">
-    <p>Keep this on your Home Screen: tap <b>Share</b> (on newer iPhones it's inside <b>•••</b>), then <b>Add to Home Screen</b>.</p>
-    <button type="button" id="tip-x">Got it</button>
+    <h2 class="tip-h">Put this on your Home Screen</h2>
+    <ol class="tip-steps">
+      <li>Tap <span class="ios-more" role="img" aria-label="the three-dot button"><svg viewBox="0 0 22 6" fill="currentColor" aria-hidden="true"><circle cx="3" cy="3" r="2.4"/><circle cx="11" cy="3" r="2.4"/><circle cx="19" cy="3" r="2.4"/></svg></span> at the bottom right of Safari.</li>
+      <li>Tap <b>Share</b> <span class="ios-ico" role="img" aria-label="Share icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 9.5H7a2 2 0 0 0-2 2V19a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7.5a2 2 0 0 0-2-2h-1.5"/><path d="M12 2.5v12M8.5 6 12 2.5 15.5 6"/></svg></span></li>
+      <li>Tap <b>Add to Home Screen</b> <span class="ios-ico" role="img" aria-label="Add to Home Screen icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4.5"/><path d="M12 8v8M8 12h8"/></svg></span> (scroll down if you don't see it).</li>
+      <li>Leave <b>Open as Web App</b> on, then tap <b>Add</b>.</li>
+    </ol>
+    <p class="tip-note">Then open it from the new icon on your Home Screen. If you see the Share icon <span class="ios-ico" role="img" aria-label="Share icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 9.5H7a2 2 0 0 0-2 2V19a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7.5a2 2 0 0 0-2-2h-1.5"/><path d="M12 2.5v12M8.5 6 12 2.5 15.5 6"/></svg></span> at the bottom of Safari, tap it and skip step 1.</p>
+    <button type="button" id="tip-x">Hide for now</button>
   </div>
 </div>
 
@@ -1048,8 +1073,10 @@ function setPhone() {
 
 /* Home Screen tip, only in the browser */
 const standalone = window.navigator.standalone === true || matchMedia("(display-mode: standalone)").matches;
-if (!standalone && !flag.get("tipDone")) $("tip").hidden = false;
-$("tip-x").addEventListener("click", () => { $("tip").hidden = true; flag.set("tipDone"); });
+// Shows on every Safari visit until the book is opened from the Home Screen icon; never inside the installed app.
+const tipHidden = () => { try { return sessionStorage.getItem("vt26.tip") === "1"; } catch (e) { return false; } };
+if (!standalone && !tipHidden()) $("tip").hidden = false;
+$("tip-x").addEventListener("click", () => { $("tip").hidden = true; try { sessionStorage.setItem("vt26.tip", "1"); } catch (e) {} });
 // Ask iOS to keep this book's storage; WebKit grants it to Home Screen web apps.
 if (standalone && navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
 
