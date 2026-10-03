@@ -1,6 +1,6 @@
 {
-  "name": "V’s Tickets",
-  "short_name": "V’s Tickets",
+  "name": "V’s Birthday Tickets",
+  "short_name": "V’s Birthday Tickets",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
