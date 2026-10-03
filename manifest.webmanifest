@@ -1,6 +1,6 @@
 {
-  "name": "Veronica's Tickets",
-  "short_name": "Tickets",
+  "name": "More Us",
+  "short_name": "More Us",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
