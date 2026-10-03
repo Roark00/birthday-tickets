@@ -1,6 +1,6 @@
 {
-  "name": "More Us",
-  "short_name": "More Us",
+  "name": "V’s Birthday Tickets",
+  "short_name": "V’s Tickets",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
