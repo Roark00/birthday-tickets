@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>V’s Birthday Tickets</title>
+<title>Birthday Tickets</title>
 <meta name="hermes-title" content="Veronica's birthday tickets">
 <meta name="hermes-description" content="Tear-off birthday ticket book for Veronica's iPhone home screen">
 <meta name="theme-color" content="#EADBC4">
@@ -11,7 +11,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="V’s Birthday Tickets">
+<meta name="apple-mobile-web-app-title" content="Birthday Tickets">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" type="image/png" href="icon-180.png">
 <link rel="manifest" href="manifest.webmanifest">
@@ -184,14 +184,14 @@ dialog :focus-visible { outline-color: var(--paper); }
   line-height: 1;
 }
 .pass ul { margin: 0; padding: 0; list-style: none; }
-.pass li {
+.pass > ul > li {
   position: relative;
   padding-left: 26px;
   margin-top: 8px;
   font-size: 20px;
   font-weight: 700;
 }
-.pass li::before {
+.pass > ul > li::before {
   content: "";
   position: absolute;
   left: 2px;
@@ -533,6 +533,19 @@ details.group .blurb, details.group .tickets, details.group .empty, details.used
 .compact ~ dialog .sheet-p, .blurb, .way .sub, .up-what { font-family: -apple-system, system-ui, sans-serif; letter-spacing: 0; }
 .compact ~ dialog .sheet-p { font-size: 18px; }
 
+/* In-app dialog: a small paper card, not the full-screen sheet */
+#ask { width: min(92vw, 360px); height: auto; max-height: none; margin: auto; padding: 0; background: transparent; overflow: visible; }
+#ask[open] { display: block; }
+#ask::backdrop { background: rgba(20, 14, 8, .5); }
+.ask-box { padding: 22px 20px 16px; background: var(--paper); color: var(--ink); border-radius: 18px; box-shadow: 0 10px 40px rgba(0, 0, 0, .3); }
+.ask-h { margin: 0 0 6px; font-family: var(--display); font-weight: 800; font-size: 28px; line-height: 1.05; }
+.ask-p { margin: 0 0 14px; font-family: -apple-system, system-ui, sans-serif; font-size: 16px; line-height: 1.4; }
+.ask-in { width: 100%; margin: 0 0 16px; padding: 12px 14px; border: 2px solid var(--ink); border-radius: 12px; background: #fff; color: var(--ink); font: 600 20px -apple-system, system-ui, sans-serif; }
+.ask-acts { display: flex; justify-content: flex-end; gap: 8px; }
+.ask-btn { min-height: 44px; padding: 8px 18px; border: 0; border-radius: 12px; background: var(--ink); color: var(--paper); font-family: var(--display); font-weight: 800; font-size: 21px; cursor: pointer; }
+.ask-btn.quiet { background: none; color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+.ask-box :focus-visible { outline-color: var(--ink); }
+
 [hidden] { display: none !important; }
 
 @media (prefers-reduced-motion: reduce) {
@@ -629,6 +642,18 @@ details.group .blurb, details.group .tickets, details.group .empty, details.used
   </div>
 </dialog>
 
+<dialog id="ask" aria-labelledby="ask-h">
+  <div class="ask-box">
+    <h2 class="ask-h" id="ask-h"></h2>
+    <p class="ask-p" id="ask-p"></p>
+    <input class="ask-in" id="ask-in" type="tel" inputmode="tel" autocomplete="off" aria-labelledby="ask-h" hidden>
+    <div class="ask-acts">
+      <button type="button" class="ask-btn quiet" id="ask-no">Cancel</button>
+      <button type="button" class="ask-btn" id="ask-yes">OK</button>
+    </div>
+  </div>
+</dialog>
+
 <script>
 /* ---------- Edit these ---------- */
 
@@ -698,7 +723,7 @@ function commit(change) {
     return true;
   } catch (e) {
     state = JSON.parse(before);
-    alert("That couldn't be saved on this phone, so nothing changed. Your promises still count. Tell Josh and he'll sort out the book.");
+    showAsk({ title: "Couldn't save that", text: "Nothing changed on this phone. Your promises still count. Tell Josh and he'll sort out the book.", no: null });
     return false;
   }
 }
@@ -707,6 +732,21 @@ const flag = {
   set(k) { try { localStorage.setItem("vt26." + k, "1"); } catch (e) {} }
 };
 
+// In-app dialog. Unlike alert/confirm/prompt, it never shows the site's address.
+let askDone = null;
+function showAsk({ title, text = "", input = null, yes = "OK", no = "Cancel" }, done) {
+  $("ask-h").textContent = title;
+  $("ask-p").textContent = text;
+  $("ask-p").hidden = !text;
+  $("ask-in").hidden = input === null;
+  if (input !== null) $("ask-in").value = input;
+  $("ask-yes").textContent = yes;
+  $("ask-no").textContent = no || "";
+  $("ask-no").hidden = !no;
+  askDone = done || null;
+  $("ask").showModal();
+  (input !== null ? $("ask-in") : $("ask-yes")).focus();
+}
 const phone = () => state.phone || JOSH_PHONE;
 const sms = text => `sms:${phone()}${SMS_SEP}body=${encodeURIComponent(text)}`;
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -1032,13 +1072,18 @@ $("groups").addEventListener("click", e => {
 /* Cancelling a drop-off and undoing a stub are the same promise changing,
    so both put any ticket back and open a text so Josh hears about it. */
 function cancelBooking(b) {
-  if (!confirm(`Cancel drop-off on ${longDate(b.date)}?${b.ticket ? " The ticket goes back in your book." : ""} Messages opens so you can tell Josh.`)) return;
-  if (!commit(st => {
-    st.bookings = st.bookings.filter(x => x.id !== b.id);
-    if (b.ticket) delete st.torn[b.ticket];
-  })) return;
-  render();
-  location.href = sms(`Never mind about drop-off on ${longDate(b.date)}. I've got it.`);
+  showAsk({
+    title: `Cancel ${shortDate(b.date)}?`,
+    text: `${b.ticket ? "The ticket goes back in your book. " : ""}Messages opens so you can tell Josh.`,
+    yes: "Cancel it", no: "Keep it"
+  }, () => {
+    if (!commit(st => {
+      st.bookings = st.bookings.filter(x => x.id !== b.id);
+      if (b.ticket) delete st.torn[b.ticket];
+    })) return;
+    render();
+    location.href = sms(`Never mind about drop-off on ${longDate(b.date)}. I've got it.`);
+  });
 }
 
 $("up-list").addEventListener("click", e => {
@@ -1055,13 +1100,18 @@ $("stub-row").addEventListener("click", e => {
   if (!t) return;
   const b = state.bookings.find(x => x.ticket === t.id && x.date >= today());
   if (b) { cancelBooking(b); return; }
-  if (!confirm(`Put "${t.title}" (No. ${t.no}) back in the book? Messages opens so you can tell Josh it's off.`)) return;
-  if (!commit(st => {
-    delete st.torn[t.id];
-    st.bookings = st.bookings.filter(x => x.ticket !== t.id);
-  })) return;
-  render();
-  location.href = sms(`Never mind about my "${t.title}" ticket (No. ${t.no}). I'm putting it back.`);
+  showAsk({
+    title: `Put No. ${t.no} back?`,
+    text: `"${t.title}" goes back in your book. Messages opens so you can tell Josh it's off.`,
+    yes: "Put it back", no: "Keep it torn"
+  }, () => {
+    if (!commit(st => {
+      delete st.torn[t.id];
+      st.bookings = st.bookings.filter(x => x.ticket !== t.id);
+    })) return;
+    render();
+    location.href = sms(`Never mind about my "${t.title}" ticket (No. ${t.no}). I'm putting it back.`);
+  });
 });
 
 /* Setup: Josh stores his number on her phone (link under the signature, or long-press "Josh"). */
@@ -1071,10 +1121,18 @@ let pressTimer;
 sig.addEventListener("pointerdown", () => { pressTimer = setTimeout(setPhone, 700); });
 ["pointerup", "pointerleave", "pointercancel"].forEach(ev => sig.addEventListener(ev, () => clearTimeout(pressTimer)));
 function setPhone() {
-  const v = prompt("Josh's mobile number for the texts. It stays on this phone only.", state.phone || "");
-  if (v === null) return;
-  if (commit(st => { st.phone = v.replace(/[^\d+]/g, ""); })) render();
+  showAsk({ title: "Josh's number", text: "For the texts. It stays on this phone only.", input: state.phone || "", yes: "Save" },
+    v => { if (commit(st => { st.phone = v.replace(/[^\d+]/g, ""); })) render(); });
 }
+
+$("ask-yes").addEventListener("click", () => {
+  const v = $("ask-in").value, done = askDone;
+  askDone = null;
+  $("ask").close();
+  if (done) done(v);   // runs inside the tap, so a text link can still open Messages
+});
+$("ask-no").addEventListener("click", () => { askDone = null; $("ask").close(); });
+$("ask-in").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); $("ask-yes").click(); } });
 
 /* Home Screen tip, only in the browser */
 const standalone = window.navigator.standalone === true || matchMedia("(display-mode: standalone)").matches;
