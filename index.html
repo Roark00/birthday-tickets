@@ -332,6 +332,7 @@ dialog :focus-visible { outline-color: var(--paper); }
 /* Signature */
 .sign { margin-top: 50px; }
 .sign p { margin: 0; font-size: 26px; font-weight: 700; }
+.setup-link { display: block; margin-top: 26px; min-height: 44px; padding: 8px 0; border: 0; background: none; color: var(--on-bg); font-family: -apple-system, system-ui, sans-serif; font-size: 15px; text-decoration: underline; text-underline-offset: 3px; opacity: .75; cursor: pointer; }
 .sign .josh { font-size: 54px; line-height: .9; color: var(--accent); transform: rotate(-4deg); transform-origin: left; display: inline-block; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
 
 /* Tear sheet */
@@ -548,7 +549,7 @@ details.group .blurb, details.group .tickets, details.group .empty, details.used
     <ol class="tip-steps">
       <li>Tap <span class="ios-more" role="img" aria-label="the three-dot button"><svg viewBox="0 0 22 6" fill="currentColor" aria-hidden="true"><circle cx="3" cy="3" r="2.4"/><circle cx="11" cy="3" r="2.4"/><circle cx="19" cy="3" r="2.4"/></svg></span> at the bottom right of Safari.</li>
       <li>Tap <b>Share</b> <span class="ios-ico" role="img" aria-label="Share icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 9.5H7a2 2 0 0 0-2 2V19a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7.5a2 2 0 0 0-2-2h-1.5"/><path d="M12 2.5v12M8.5 6 12 2.5 15.5 6"/></svg></span></li>
-      <li>Tap <b>Add to Home Screen</b> <span class="ios-ico" role="img" aria-label="Add to Home Screen icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4.5"/><path d="M12 8v8M8 12h8"/></svg></span> (scroll down if you don't see it).</li>
+      <li>Tap <b>View More</b>, then <b>Add to Home Screen</b> <span class="ios-ico" role="img" aria-label="Add to Home Screen icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4.5"/><path d="M12 8v8M8 12h8"/></svg></span></li>
       <li>Leave <b>Open as Web App</b> on, then tap <b>Add</b>.</li>
     </ol>
     <p class="tip-note">Then open it from the new icon on your Home Screen. If you see the Share icon <span class="ios-ico" role="img" aria-label="Share icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 9.5H7a2 2 0 0 0-2 2V19a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7.5a2 2 0 0 0-2-2h-1.5"/><path d="M12 2.5v12M8.5 6 12 2.5 15.5 6"/></svg></span> at the bottom of Safari, tap it and skip step 1.</p>
@@ -594,6 +595,7 @@ details.group .blurb, details.group .tickets, details.group .empty, details.used
   <footer class="sign">
     <p>Love,</p>
     <p class="josh">Josh</p>
+    <button type="button" class="setup-link" id="setup-phone"></button>
   </footer>
 </main>
 
@@ -836,6 +838,8 @@ function render() {
   }).join("");
 
   $("nudge").href = sms(NUDGE_TEXT);
+  const p = phone();
+  $("setup-phone").textContent = p ? `Texts go to Josh (ends in ${p.slice(-4)}). Change` : "Set the number for texts to Josh";
 }
 
 /* Tear sheet */
@@ -1060,7 +1064,8 @@ $("stub-row").addEventListener("click", e => {
   location.href = sms(`Never mind about my "${t.title}" ticket (No. ${t.no}). I'm putting it back.`);
 });
 
-/* Setup: Josh long-presses his signature on her phone to store his number there. */
+/* Setup: Josh stores his number on her phone (link under the signature, or long-press "Josh"). */
+$("setup-phone").addEventListener("click", () => setPhone());
 const sig = document.querySelector(".sign .josh");
 let pressTimer;
 sig.addEventListener("pointerdown", () => { pressTimer = setTimeout(setPhone, 700); });
